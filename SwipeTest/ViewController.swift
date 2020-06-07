@@ -87,6 +87,12 @@ class ViewController: UIViewController {
             cardView.center.x = panGestureRecognizer.translation(in: cardView).x + view.center.x
             cardView.center.y = panGestureRecognizer.translation(in: cardView).y + view.center.y
         case .ended:
+            if panGestureRecognizer.translation(in: cardView).y < -cardView.frame.height * 0.35 {
+                UIView.animate(withDuration: 0.4) {
+                    self.cardView.transform = CGAffineTransform(translationX: 0, y: -self.cardView.frame.height * 1.5)
+                }
+                break
+            }
             if translationX > cardView.frame.width / 2 {
                 UIView.animate(withDuration: 0.4) {
                     if self.panGestureRecognizer.translation(in: self.cardView).x < 0 {
