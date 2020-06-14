@@ -10,8 +10,19 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    private let cardView = CardView()
+    private let firstCardView = CardView()
+    private let secondCardView = CardView()
     private let superlikeView = SuperlikeView()
+    private let shadowView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 10
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = CGSize(width: 5, height: 5)
+        view.layer.shadowRadius = 10
+        view.layer.shadowOpacity = 1
+        return view
+    }()
     private let yesView: UIImageView = {
         let view = UIImageView(image: UIImage(named: "yes"))
         view.alpha = 0
@@ -26,20 +37,12 @@ class ViewController: UIViewController {
     }()
     private var panGestureRecognizer: UIPanGestureRecognizer!
     private var dragFromTop = false
-    private let resetButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.layer.cornerRadius = 10
-        button.backgroundColor = .white
-        button.setTitle("Reset", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 24, weight: .medium)
-        button.setTitleColor(.black, for: .normal)
-        button.layer.cornerRadius = 10
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 10, height: 10)
-        button.layer.shadowRadius = 10
-        button.layer.shadowOpacity = 1
-        return button
-    }()
+    private let cardImages = [
+        UIImage(named: "pig")!,
+        UIImage(named: "rabbit")!,
+        UIImage(named: "giraffe")!
+    ]
+    private var nextImage: UIImage?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,21 +52,24 @@ class ViewController: UIViewController {
     
     private func setupLogic() {
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(cardViewDragged))
-        cardView.addGestureRecognizer(panGestureRecognizer)
-        resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
+        firstCardView.addGestureRecognizer(panGestureRecognizer)
     }
     
     private func setupUI() {
-        view.backgroundColor = .cyan
-        view.addSubview(cardView)
-        view.addSubview(resetButton)
-        cardView.imageView.image = UIImage(named: "pig")
-        cardView.addSubview(superlikeView)
-        cardView.addSubview(noView)
-        cardView.addSubview(yesView)
+        view.backgroundColor = .systemTeal
+        view.insertSubview(shadowView, at: 0)
+        view.insertSubview(secondCardView, at: 1)
+        view.insertSubview(firstCardView, at: 2)
+        firstCardView.imageView.image = cardImages.randomElement()
+        nextImage = cardImages.randomElement()
+        secondCardView.imageView.image = nextImage
+        firstCardView.addSubview(superlikeView)
+        firstCardView.addSubview(noView)
+        firstCardView.addSubview(yesView)
         
-        cardView.translatesAutoresizingMaskIntoConstraints = false
-        resetButton.translatesAutoresizingMaskIntoConstraints = false
+        shadowView.translatesAutoresizingMaskIntoConstraints = false
+        firstCardView.translatesAutoresizingMaskIntoConstraints = false
+        secondCardView.translatesAutoresizingMaskIntoConstraints = false
         superlikeView.translatesAutoresizingMaskIntoConstraints = false
         yesView.translatesAutoresizingMaskIntoConstraints = false
         noView.translatesAutoresizingMaskIntoConstraints = false
@@ -73,83 +79,107 @@ class ViewController: UIViewController {
         noView.transform = CGAffineTransform(rotationAngle: 0.6)
         
         NSLayoutConstraint.activate([
-            cardView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            cardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            cardView.heightAnchor.constraint(equalToConstant: view.frame.height / 2),
-            cardView.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
+            firstCardView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            firstCardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            firstCardView.heightAnchor.constraint(equalToConstant: view.frame.height / 2),
+            firstCardView.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
             
-            resetButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20),
-            resetButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            resetButton.widthAnchor.constraint(equalToConstant: 200),
-            resetButton.heightAnchor.constraint(equalToConstant: 40),
+            secondCardView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            secondCardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            secondCardView.heightAnchor.constraint(equalToConstant: view.frame.height / 2),
+            secondCardView.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
+            
+            shadowView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            shadowView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            shadowView.heightAnchor.constraint(equalToConstant: view.frame.height / 2),
+            shadowView.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
             
             yesView.heightAnchor.constraint(equalToConstant: 80),
             yesView.widthAnchor.constraint(equalToConstant: 160),
-            yesView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 60),
-            yesView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 10),
+            yesView.topAnchor.constraint(equalTo: firstCardView.topAnchor, constant: 60),
+            yesView.leadingAnchor.constraint(equalTo: firstCardView.leadingAnchor, constant: 10),
             
             noView.heightAnchor.constraint(equalToConstant: 80),
             noView.widthAnchor.constraint(equalToConstant: 160),
-            noView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 60),
-            noView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -10),
+            noView.topAnchor.constraint(equalTo: firstCardView.topAnchor, constant: 60),
+            noView.trailingAnchor.constraint(equalTo: firstCardView.trailingAnchor, constant: -10),
             
             superlikeView.heightAnchor.constraint(equalToConstant: 80),
             superlikeView.widthAnchor.constraint(equalToConstant: 160),
-            superlikeView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -100),
-            superlikeView.centerXAnchor.constraint(equalTo: cardView.centerXAnchor)
+            superlikeView.bottomAnchor.constraint(equalTo: firstCardView.bottomAnchor, constant: -100),
+            superlikeView.centerXAnchor.constraint(equalTo: firstCardView.centerXAnchor)
         ])
     }
     
     @objc private func resetButtonTapped() {
-        self.cardView.center = self.view.center
-        self.cardView.transform = .identity
+        self.firstCardView.center = self.view.center
+        self.firstCardView.transform = .identity
     }
     
     @objc private func cardViewDragged() {
         var absTranslationX: CGFloat = 0
         var directionKoef: CGFloat = 0
         
-        if panGestureRecognizer.translation(in: cardView).x < 0 {
+        if panGestureRecognizer.translation(in: firstCardView).x < 0 {
             directionKoef = -(dragFromTop ? 1.0 : -1.0)
-            absTranslationX = -panGestureRecognizer.translation(in: cardView).x
+            absTranslationX = -panGestureRecognizer.translation(in: firstCardView).x
         } else {
             directionKoef = dragFromTop ? 1.0 : -1.0
-            absTranslationX = panGestureRecognizer.translation(in: cardView).x
+            absTranslationX = panGestureRecognizer.translation(in: firstCardView).x
         }
         let rotationPerPoint = 0.3 / view.frame.width * absTranslationX
         
         switch panGestureRecognizer.state {
         case .began:
-            dragFromTop = panGestureRecognizer.location(in: cardView).y < cardView.frame.height / 2
+            dragFromTop = panGestureRecognizer.location(in: firstCardView).y < firstCardView.frame.height / 2
         case .changed:
-            cardView.transform = CGAffineTransform(
+            firstCardView.transform = CGAffineTransform(
                 rotationAngle: rotationPerPoint * CGFloat(directionKoef))
-            cardView.center.x = panGestureRecognizer.translation(in: cardView).x + view.center.x
-            cardView.center.y = panGestureRecognizer.translation(in: cardView).y + view.center.y
-            changeAlpha(panGestureRecognizer.translation(in: cardView).x, panGestureRecognizer.translation(in: cardView).y)
+            firstCardView.center.x = panGestureRecognizer.translation(in: firstCardView).x + view.center.x
+            firstCardView.center.y = panGestureRecognizer.translation(in: firstCardView).y + view.center.y
+            changeAlpha(panGestureRecognizer.translation(in: firstCardView).x, panGestureRecognizer.translation(in: firstCardView).y)
         case .ended:
             // If should move vertically from screen
-            if panGestureRecognizer.translation(in: cardView).y < -cardView.frame.height * 0.35 {
-                UIView.animate(withDuration: 0.4) {
-                    self.cardView.transform = CGAffineTransform(translationX: 0, y: -self.cardView.frame.height * 1.5)
+            if panGestureRecognizer.translation(in: firstCardView).y < -firstCardView.frame.height * 0.35 {
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.firstCardView.transform = CGAffineTransform(translationX: 0, y: -self.firstCardView.frame.height * 1.5)
+                }) { _ in
+                    self.yesView.alpha = 0
+                    self.noView.alpha = 0
+                    self.superlikeView.alpha = 0
+                    self.firstCardView.center = self.view.center
+                    self.firstCardView.transform = .identity
+                    self.firstCardView.imageView.image = self.nextImage
+                    self.nextImage = self.cardImages.randomElement()
+                    self.secondCardView.imageView.image = self.nextImage
                 }
                 break
             } //-------
-            // If should move vertically
-            if absTranslationX > cardView.frame.width / 2 {
-                UIView.animate(withDuration: 0.4) {
-                    if self.panGestureRecognizer.translation(in: self.cardView).x < 0 {
-                        self.cardView.center.x = -self.view.frame.width
+            // If should move horizontally from screen
+            if absTranslationX > firstCardView.frame.width / 2 {
+                UIView.animate(withDuration: 0.4, animations:  {
+                    if self.panGestureRecognizer.translation(in: self.firstCardView).x < 0 {
+                        self.firstCardView.center.x = -self.view.frame.width
                     } else {
-                        self.cardView.center.x = self.view.frame.width
+                        self.firstCardView.center.x = self.view.frame.width * 2
                     }
-                    self.cardView.transform = CGAffineTransform(rotationAngle: 0.3 * directionKoef)
+                    self.firstCardView.transform = CGAffineTransform(rotationAngle: 0.3 * directionKoef)
+                }) { _ in
+                    self.yesView.alpha = 0
+                    self.noView.alpha = 0
+                    self.superlikeView.alpha = 0
+                    self.firstCardView.imageView.image = UIImage(named: "rabbit")
+                    self.firstCardView.center = self.view.center
+                    self.firstCardView.transform = .identity
+                    self.firstCardView.imageView.image = self.nextImage
+                    self.nextImage = self.cardImages.randomElement()
+                    self.secondCardView.imageView.image = self.nextImage
                 } //------
                 // Otherwise return to center
             } else {
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.8, animations: {
-                    self.cardView.center = self.view.center
-                    self.cardView.transform = .identity
+                    self.firstCardView.center = self.view.center
+                    self.firstCardView.transform = .identity
                     self.superlikeView.alpha = 0
                     self.yesView.alpha = 0
                     self.noView.alpha = 0
@@ -161,8 +191,8 @@ class ViewController: UIViewController {
     }// CardViewDragged
     
     private func changeAlpha(_ translationX: CGFloat, _ translationY: CGFloat) {
-        let verticalAlphaPerPoint = 1 / (cardView.frame.height / 2)
-        let horizontalAlphaPerPoint = 1 / (cardView.frame.width / 2)
+        let verticalAlphaPerPoint = 1 / (firstCardView.frame.height / 2)
+        let horizontalAlphaPerPoint = 1 / (firstCardView.frame.width / 2)
         if translationX > 0 {
             yesView.alpha = horizontalAlphaPerPoint * translationX
         }

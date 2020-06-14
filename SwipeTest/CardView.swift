@@ -10,15 +10,6 @@ import UIKit
 
 class CardView: UIView {
     
-    let shadowView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 10
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOffset = CGSize(width: 5, height: 5)
-        view.layer.shadowRadius = 10
-        view.layer.shadowOpacity = 1
-        return view
-    }()
     let imageView: UIImageView = {
         let view = UIImageView()
         view.backgroundColor = .clear
@@ -31,17 +22,11 @@ class CardView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.cornerRadius = 10
-        addSubview(shadowView)
-        shadowView.addSubview(imageView)
-        shadowView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(imageView)
+        backgroundColor = .white
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            shadowView.topAnchor.constraint(equalTo: self.topAnchor),
-            shadowView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            shadowView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            shadowView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            
             imageView.topAnchor.constraint(equalTo: self.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
