@@ -13,16 +13,6 @@ class ViewController: UIViewController {
     private let firstCardView = CardView()
     private let secondCardView = CardView()
     private let superlikeView = SuperlikeView()
-    private let shadowView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = 10
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOffset = CGSize(width: 5, height: 5)
-        view.layer.shadowRadius = 10
-        view.layer.shadowOpacity = 1
-        return view
-    }()
     private let yesView: UIImageView = {
         let view = UIImageView(image: UIImage(named: "yes"))
         view.alpha = 0
@@ -57,9 +47,8 @@ class ViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .systemTeal
-        view.insertSubview(shadowView, at: 0)
-        view.insertSubview(secondCardView, at: 1)
-        view.insertSubview(firstCardView, at: 2)
+        view.insertSubview(secondCardView, at: 0)
+        view.insertSubview(firstCardView, at: 1)
         firstCardView.imageView.image = cardImages.randomElement()
         nextImage = cardImages.randomElement()
         secondCardView.imageView.image = nextImage
@@ -67,7 +56,6 @@ class ViewController: UIViewController {
         firstCardView.addSubview(noView)
         firstCardView.addSubview(yesView)
         
-        shadowView.translatesAutoresizingMaskIntoConstraints = false
         firstCardView.translatesAutoresizingMaskIntoConstraints = false
         secondCardView.translatesAutoresizingMaskIntoConstraints = false
         superlikeView.translatesAutoresizingMaskIntoConstraints = false
@@ -89,11 +77,6 @@ class ViewController: UIViewController {
             secondCardView.heightAnchor.constraint(equalToConstant: view.frame.height / 2),
             secondCardView.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
             
-            shadowView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            shadowView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            shadowView.heightAnchor.constraint(equalToConstant: view.frame.height / 2),
-            shadowView.widthAnchor.constraint(equalToConstant: view.frame.width * 0.9),
-            
             yesView.heightAnchor.constraint(equalToConstant: 80),
             yesView.widthAnchor.constraint(equalToConstant: 160),
             yesView.topAnchor.constraint(equalTo: firstCardView.topAnchor, constant: 60),
@@ -109,6 +92,7 @@ class ViewController: UIViewController {
             superlikeView.bottomAnchor.constraint(equalTo: firstCardView.bottomAnchor, constant: -100),
             superlikeView.centerXAnchor.constraint(equalTo: firstCardView.centerXAnchor)
         ])
+        secondCardView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
     }
     
     @objc private func resetButtonTapped() {
@@ -119,6 +103,7 @@ class ViewController: UIViewController {
     @objc private func cardViewDragged() {
         var absTranslationX: CGFloat = 0
         var directionKoef: CGFloat = 0
+        let absTranslationY = abs(panGestureRecognizer.translation(in: firstCardView).y)
         
         if panGestureRecognizer.translation(in: firstCardView).x < 0 {
             directionKoef = -(dragFromTop ? 1.0 : -1.0)
@@ -128,6 +113,8 @@ class ViewController: UIViewController {
             absTranslationX = panGestureRecognizer.translation(in: firstCardView).x
         }
         let rotationPerPoint = 0.3 / view.frame.width * absTranslationX
+        let transformationPerHPoint = 0.1 / (firstCardView.frame.width / 2)
+        let transformationPerVPoint = 0.1 / (firstCardView.frame.height * 0.7)
         
         switch panGestureRecognizer.state {
         case .began:
@@ -138,11 +125,21 @@ class ViewController: UIViewController {
             firstCardView.center.x = panGestureRecognizer.translation(in: firstCardView).x + view.center.x
             firstCardView.center.y = panGestureRecognizer.translation(in: firstCardView).y + view.center.y
             changeAlpha(panGestureRecognizer.translation(in: firstCardView).x, panGestureRecognizer.translation(in: firstCardView).y)
+            if absTranslationX > absTranslationY {
+                secondCardView.transform = CGAffineTransform(
+                    scaleX: 0.9 + absTranslationX * transformationPerHPoint,
+                    y: 0.9 + absTranslationX * transformationPerHPoint)
+            } else {
+                secondCardView.transform = CGAffineTransform(
+                scaleX: 0.9 + absTranslationY * transformationPerVPoint,
+                y: 0.9 + absTranslationY * transformationPerVPoint)
+            }
         case .ended:
             // If should move vertically from screen
             if panGestureRecognizer.translation(in: firstCardView).y < -firstCardView.frame.height * 0.35 {
                 UIView.animate(withDuration: 0.4, animations: {
                     self.firstCardView.transform = CGAffineTransform(translationX: 0, y: -self.firstCardView.frame.height * 1.5)
+                    self.secondCardView.transform = .identity
                 }) { _ in
                     self.yesView.alpha = 0
                     self.noView.alpha = 0
@@ -152,6 +149,7 @@ class ViewController: UIViewController {
                     self.firstCardView.imageView.image = self.nextImage
                     self.nextImage = self.cardImages.randomElement()
                     self.secondCardView.imageView.image = self.nextImage
+                    self.secondCardView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
                 }
                 break
             } //-------
@@ -164,6 +162,7 @@ class ViewController: UIViewController {
                         self.firstCardView.center.x = self.view.frame.width * 2
                     }
                     self.firstCardView.transform = CGAffineTransform(rotationAngle: 0.3 * directionKoef)
+                    self.secondCardView.transform = .identity
                 }) { _ in
                     self.yesView.alpha = 0
                     self.noView.alpha = 0
@@ -174,10 +173,12 @@ class ViewController: UIViewController {
                     self.firstCardView.imageView.image = self.nextImage
                     self.nextImage = self.cardImages.randomElement()
                     self.secondCardView.imageView.image = self.nextImage
+                    self.secondCardView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
                 } //------
                 // Otherwise return to center
             } else {
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.8, animations: {
+                    self.secondCardView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
                     self.firstCardView.center = self.view.center
                     self.firstCardView.transform = .identity
                     self.superlikeView.alpha = 0
