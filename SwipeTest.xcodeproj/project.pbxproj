@@ -12,6 +12,7 @@
 		1F473FFB2486F26100385197 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F473FFA2486F26100385197 /* ViewController.swift */; };
 		1F4740002486F26300385197 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F473FFF2486F26300385197 /* Assets.xcassets */; };
 		1F4740032486F26300385197 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F4740012486F26300385197 /* LaunchScreen.storyboard */; };
+		1F80611E2498E50500B5FA65 /* UIButton + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F80611D2498E50500B5FA65 /* UIButton + Extension.swift */; };
 		1F8FDE9B248D60F100754F19 /* SuperlikeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FDE9A248D60F100754F19 /* SuperlikeView.swift */; };
 		1F9AADA5248A8B3900BC149C /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9AADA4248A8B3900BC149C /* CardView.swift */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,7 @@
 		1F473FFF2486F26300385197 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1F4740022486F26300385197 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1F4740042486F26300385197 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1F80611D2498E50500B5FA65 /* UIButton + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton + Extension.swift"; sourceTree = "<group>"; };
 		1F8FDE9A248D60F100754F19 /* SuperlikeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuperlikeView.swift; sourceTree = "<group>"; };
 		1F9AADA4248A8B3900BC149C /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -62,6 +64,7 @@
 				1F473FF82486F26100385197 /* SceneDelegate.swift */,
 				1F473FFA2486F26100385197 /* ViewController.swift */,
 				1F9AADA4248A8B3900BC149C /* CardView.swift */,
+				1F80611D2498E50500B5FA65 /* UIButton + Extension.swift */,
 				1F8FDE9A248D60F100754F19 /* SuperlikeView.swift */,
 				1F473FFF2486F26300385197 /* Assets.xcassets */,
 				1F4740012486F26300385197 /* LaunchScreen.storyboard */,
@@ -145,6 +148,7 @@
 				1F9AADA5248A8B3900BC149C /* CardView.swift in Sources */,
 				1F8FDE9B248D60F100754F19 /* SuperlikeView.swift in Sources */,
 				1F473FF92486F26100385197 /* SceneDelegate.swift in Sources */,
+				1F80611E2498E50500B5FA65 /* UIButton + Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
