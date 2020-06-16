@@ -106,12 +106,12 @@ class ViewController: UIViewController {
             
             leftButton.topAnchor.constraint(equalTo: firstCardView.bottomAnchor, constant: 50),
             leftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            leftButton.widthAnchor.constraint(equalToConstant: 150),
+            leftButton.widthAnchor.constraint(equalToConstant: 70),
             leftButton.heightAnchor.constraint(equalToConstant: 40),
             
             rightButton.topAnchor.constraint(equalTo: firstCardView.bottomAnchor, constant: 50),
             rightButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            rightButton.widthAnchor.constraint(equalToConstant: 150),
+            rightButton.widthAnchor.constraint(equalToConstant: 70),
             rightButton.heightAnchor.constraint(equalToConstant: 40),
         ])
         secondCardView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
@@ -244,12 +244,6 @@ class ViewController: UIViewController {
     private func cardMoving(to direction: Direction) {
         var angle: CGFloat = 0.0
         UIView.animate(withDuration: 0.4, animations: {
-//            var perspective = CATransform3DIdentity
-//            perspective.m34 = 1 / 1000
-//            let transformLayer = CATransformLayer()
-//            transformLayer.transform = perspective
-//            transformLayer.addSublayer(self.firstCardView.layer)
-//            self.view.layer.addSublayer(transformLayer)
             switch direction {
             case .left:
                 angle = 0.6
